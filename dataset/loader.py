@@ -128,12 +128,16 @@ def load_checkpoint(model, optimizer, filename=None):
     if os.path.isfile(filename):
         print("=> loading checkpoint '{}'".format(filename))
         checkpoint = torch.load(filename)
-        start_epoch = checkpoint["epoch"]
-        model.load_state_dict(checkpoint["state_dict"])
-        optimizer.load_state_dict(checkpoint["optimizer"])
-        log_loss = checkpoint["min_loss"]
+        if checkpoint.get("epoch"):
+            start_epoch = checkpoint["epoch"]
+        # use get if the the checkpoint is just state_dict
+        model.load_state_dict(checkpoint.get("state_dict", checkpoint))
+        if checkpoint.get("optimizer"):
+            optimizer.load_state_dict(checkpoint["optimizer"])
+        if checkpoint.get("min_loss"):
+            log_loss = checkpoint["min_loss"]
         print(
-            "=> loaded checkpoint '{}' (epoch {})".format(filename, checkpoint["epoch"])
+            "=> loaded checkpoint '{}' (epoch {})".format(filename, checkpoint.get("epoch", 0))
         )
     else:
         print("=> no checkpoint found at '{}'".format(filename))

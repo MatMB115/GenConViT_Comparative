@@ -17,7 +17,7 @@ config = load_config()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def load_pretrained(pretrained_model_filename):
+def load_pretrained(pretrained_model_filename, model, optimizer):
     assert os.path.isfile(
         pretrained_model_filename
     ), "Saved model file does not exist. Exiting."
@@ -60,7 +60,7 @@ def train_model(
 
     if pretrained_model_filename:
         model, optimizer, start_epoch, min_loss = load_pretrained(
-            pretrained_model_filename
+            pretrained_model_filename, model, optimizer
         )
 
     model.to(device)
