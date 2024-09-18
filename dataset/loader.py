@@ -131,7 +131,7 @@ def load_checkpoint(model, optimizer, filename=None):
         if checkpoint.get("epoch"):
             start_epoch = checkpoint["epoch"]
         # use get if the the checkpoint is just state_dict
-        model.load_state_dict(checkpoint.get("state_dict", checkpoint))
+        model.load_state_dict(checkpoint.get("state_dict", checkpoint), strict=False)
         if checkpoint.get("optimizer"):
             optimizer.load_state_dict(checkpoint["optimizer"])
         if checkpoint.get("min_loss"):
