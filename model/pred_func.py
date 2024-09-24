@@ -100,10 +100,6 @@ def extract_frames(video_file, frames_nums=15):
         list(range(0, len(vr), step_size))[:frames_nums]
     ).asnumpy()  # seek frames with step_size
 
-
-import os
-import cv2
-
 def df_face(vid, num_frames, net, use_image):
     if use_image:
         img_files = sorted(os.listdir(vid))
