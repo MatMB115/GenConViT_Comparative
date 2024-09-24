@@ -127,7 +127,7 @@ def load_checkpoint(model, optimizer, filename=None):
     log_loss = 0
     if os.path.isfile(filename):
         print("=> loading checkpoint '{}'".format(filename))
-        checkpoint = torch.load(filename)
+        checkpoint = torch.load(filename, map_location=torch.device('cpu'))
         if checkpoint.get("epoch"):
             start_epoch = checkpoint["epoch"]
         # use get if the the checkpoint is just state_dict

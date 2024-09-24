@@ -75,14 +75,18 @@ def pred_vid(df, model):
 
 
 def max_prediction_value(y_pred):
-    # Finds the index and value of the maximum prediction value.
     mean_val = torch.mean(y_pred, dim=0)
+
+    if mean_val.dim() == 0:
+        return torch.argmax(mean_val).item(), mean_val.item()
+
     return (
         torch.argmax(mean_val).item(),
         mean_val[0].item()
-        if mean_val[0] > mean_val[1]
+        if mean_val[0].item() > mean_val[1].item()
         else abs(1 - mean_val[1]).item(),
     )
+
 
 
 def real_or_fake(prediction):
@@ -97,10 +101,27 @@ def extract_frames(video_file, frames_nums=15):
     ).asnumpy()  # seek frames with step_size
 
 
-def df_face(vid, num_frames, net):
-    img = extract_frames(vid, num_frames)
+import os
+import cv2
+
+def df_face(vid, num_frames, net, use_image):
+    if use_image:
+        img_files = sorted(os.listdir(vid))
+        
+        total_frames = len(img_files)
+        if total_frames > num_frames:
+            step = max(1, total_frames // num_frames)
+            selected_files = [img_files[i] for i in range(0, total_frames, step)][:num_frames]
+        else:
+            selected_files = img_files
+
+        img = [cv2.imread(os.path.join(vid, frame)) for frame in selected_files]
+    else:
+        img = extract_frames(vid, num_frames)
+
     face, count = face_rec(img)
     return preprocess_frame(face) if count > 0 else []
+
 
 
 def is_video(vid):
@@ -123,12 +144,13 @@ def set_result():
 
 
 def store_result(
-    result, filename, y, y_val, klass, correct_label=None, compression=None
+    result, filename, y, y_val, klass, correct_label=None, compression=None, num_frames=15
 ):
     result["video"]["name"].append(filename)
     result["video"]["pred"].append(y_val)
     result["video"]["klass"].append(klass.lower())
     result["video"]["pred_label"].append(real_or_fake(y))
+    result["num_frames"] = num_frames
 
     if correct_label is not None:
         result["video"]["correct_label"].append(correct_label)

@@ -14,7 +14,7 @@ class GenConViT(nn.Module):
             try:
                 self.model_ed = GenConViTED(config)
                 self.checkpoint_ed = torch.load(f'weight/{ed}.pth', map_location=torch.device('cpu'))
-
+                print(f"Loading Checkpoint in {ed}")
                 if 'state_dict' in self.checkpoint_ed:
                     self.model_ed.load_state_dict(self.checkpoint_ed['state_dict'])
                 else:
@@ -29,6 +29,7 @@ class GenConViT(nn.Module):
             try:
                 self.model_vae = GenConViTVAE(config)
                 self.checkpoint_vae = torch.load(f'weight/{vae}.pth', map_location=torch.device('cpu'))
+                print(f"Loading Checkpoint in {vae}")
 
                 if 'state_dict' in self.checkpoint_vae:
                     self.model_vae.load_state_dict(self.checkpoint_vae['state_dict'])
@@ -45,7 +46,9 @@ class GenConViT(nn.Module):
                 self.model_ed = GenConViTED(config)
                 self.model_vae = GenConViTVAE(config)
                 self.checkpoint_ed = torch.load(f'weight/{ed}.pth', map_location=torch.device('cpu'))
+                print(f"Loading Checkpoint in {ed}")
                 self.checkpoint_vae = torch.load(f'weight/{vae}.pth', map_location=torch.device('cpu'))
+                print(f"Loading Checkpoint in {vae}")
                 if 'state_dict' in self.checkpoint_ed:
                     self.model_ed.load_state_dict(self.checkpoint_ed['state_dict'])
                 else:
