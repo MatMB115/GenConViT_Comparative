@@ -236,6 +236,40 @@ def celeb(ed_weight, vae_weight, root_dir="Celeb-DF-v2", dataset=None, num_frame
 
 def wild_deepfake(ed_weight, vae_weight, root_dir="WildDeepfake", dataset=None, num_frames=15, net=None, fp16=False, use_image=False):
     with open(os.path.join("json_file", "wild_test.json"), "r") as f:
+        deepspeak_data = json.load(f)
+    
+    result = set_result()
+    count = 0
+    accuracy = 0
+    model = load_genconvit(config, net, ed_weight, vae_weight, fp16)
+
+    for path in deepspeak_data:
+        label, subdir = path.split("/")
+        vid_dir = os.path.join(root_dir, label, subdir)
+
+        correct_label = "FAKE" if label == "fake" else "REAL"
+
+        try:
+            result, accuracy, count, _ = predict(
+                vid_dir,
+                model,
+                use_image,
+                fp16,
+                result,
+                num_frames,
+                net,
+                label,
+                count,
+                accuracy,
+                correct_label,
+            )
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
+    return result
+
+def deepspeak(ed_weight, vae_weight, root_dir="DeepSpeak", dataset=None, num_frames=15, net=None, fp16=False, use_image=False):
+    with open(os.path.join("json_file", "deepspeak.json"), "r") as f:
         wild_test_data = json.load(f)
     
     result = set_result()
@@ -368,7 +402,7 @@ def main():
     path, dataset, num_frames, net, fp16, ed_weight, vae_weight, use_image = gen_parser()
     result = (
         globals()[dataset](ed_weight, vae_weight, path, dataset, num_frames, net, fp16, use_image)
-        if dataset in ["dfdc", "faceforensics", "timit", "celeb", "wild_deepfake"]
+        if dataset in ["dfdc", "faceforensics", "timit", "celeb", "wild_deepfake", "deepspeak"]
         else vids(ed_weight, vae_weight, use_image, path, dataset, num_frames, net, fp16)
     )
 
