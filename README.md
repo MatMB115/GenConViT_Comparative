@@ -1,7 +1,9 @@
-# Deepfake Video Detection Using Generative Convolutional Vision Transformer
-Deressa Wodajo, Solomon Atnafu, Zahid Akhtar
+# Fitting Generative Convolutional Vision Transformer to Compare with Benchmark
+Matheus Martins Batista
 
-This repository contains the implementation code for **Deepfake Video Detection Using Generative Convolutional Vision Transformer (GenConViT)** paper. Find the full paper on arXiv [here](https://arxiv.org/abs/2307.07036).
+Model Autor: Deressa Wodajo, Solomon Atnafu, Zahid Akhtar
+
+This repository contains the adapted code for **Generative Convolutional Vision Transformer (GenConViT)** paper to compare with other models in the literature. Find the full paper on arXiv [here](https://arxiv.org/abs/2307.07036).
 
 <br/><br/>
 ![The Proposed GenConViT Deepfake Detection Framework](img/genconvit.png)
@@ -10,6 +12,18 @@ This repository contains the implementation code for **Deepfake Video Detection 
 <p style="text-align: justify;">
 Deepfakes have raised significant concerns due to their potential to spread false information and compromise digital media integrity. In this work, we propose a Generative Convolutional Vision Transformer (GenConViT) for deepfake video detection. Our model combines ConvNeXt and Swin Transformer models for feature extraction, and it utilizes Autoencoder and Variational Autoencoder to learn from the latent data distribution. By learning from the visual artifacts and latent data distribution, GenConViT achieves improved performance in detecting a wide range of deepfake videos. The model is trained and evaluated on DFDC, FF++, DeepfakeTIMIT, and Celeb-DF v2 datasets, achieving high classification accuracy, F1 scores, and AUC values. The proposed GenConViT model demonstrates robust performance in deepfake video detection, with an average accuracy of 95.8% and an AUC value of 99.3% across the tested datasets. Our proposed model addresses the challenge of generalizability in deepfake detection by leveraging visual and latent features and providing an effective solution for identifying a wide range of fake videos while preserving media integrity.
 </p>
+
+## Table of Contents
+- [Fitting Generative Convolutional Vision Transformer to Compare with Benchmark](#fitting-generative-convolutional-vision-transformer-to-compare-with-benchmark)
+  - [Table of Contents](#table-of-contents)
+  - [GenConViT Model Architecture](#genconvit-model-architecture)
+  - [Main Changes](#main-changes)
+  - [Requirements](#requirements)
+  - [Usage](#usage)
+    - [Model Training](#model-training)
+    - [Model Testing](#model-testing)
+  - [Results](#results)
+  - [Bibtex](#bibtex)
 
 ## GenConViT Model Architecture
 
@@ -22,13 +36,17 @@ The GenConViT model consists of two independent networks and incorporates the fo
 
 The code in this repository enables training and testing of the GenConViT model for deepfake detection.
 
-## Table of Contents
+## Main Changes
 
-- [Requirements](#requirements)
-- [Usage](#usage)
-  - [Model Training](#model-training)
-  - [Model Testing](#model-testing)
-- [Results](#results)
+In this fork of the GenConViT repository, the following adaptations and improvements have been made:
+
+ - Added pipeline support for new datasets: WildDeepfake and DeepSpeak.
+
+ - Implemented adjustments to enable prediction using datasets with only pre-processed images.
+
+ - Added functionalities to save prediction data for further analysis.
+
+ - Modified the script responsible for generating graphical visualizations of results, enhancing its usability and output clarity.
 
 ## Requirements
 <pre>
@@ -43,6 +61,7 @@ The code in this repository enables training and testing of the GenConViT model 
     * opencv
     * face_recognition
     * timm
+    * scikit-learn
 </pre>
 
 ## Usage
@@ -59,7 +78,7 @@ git clone https://github.com/erprogs/GenConViT
 pip install -r requirements.txt
 ```
 
-## Model Training
+### Model Training
 
 To train the GenConViT model, follow these steps:
 
@@ -108,12 +127,14 @@ python train.py --d sample_train_data --m vae -e 5 -t y
 python train.py --d sample_train_data --m ed --e 5 -t y
 ```
 
-## Model Testing
+### Model Testing
 **Deepfake Detection using GenConViT**
 
 To make prediction using the trained GenConViT model, follow these steps:
 
-1. Download the pretrained model from [Huggingface](https://huggingface.co/Deressa/GenConViT) and save it in the `weight` folder.
+1. Download the original pretrained model from [Huggingface](https://huggingface.co/Deressa/GenConViT) and save it in the `weight` folder.
+
+Obs: ***the set of pre-trained models for different epochs and networks used for comparisons will be made available for download in the future.***
 
 Network A (ed) 
 ```bash
@@ -130,7 +151,7 @@ The provided weights only include the state dictionary. This means that the size
 For example, while the VAE is typically between 5GB and 7GB, the provided one is 2.6GB.
 
 
-2. Run the prediction script:
+1. Run the prediction script:
 
 To run the code, use the following command:
 
@@ -214,7 +235,3 @@ python result_all.py
       primaryClass={cs.CV}
 }
 ```
-
-## Acknowledgement
-
-This research was funded by Addis Ababa University Research Grant for the Adaptive Problem-Solving Research. Reference number RD/PY-183/2021. Grant number AR/048/2021.
